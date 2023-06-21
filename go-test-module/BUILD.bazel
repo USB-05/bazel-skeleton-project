@@ -4,7 +4,7 @@ load("//:tools/bzl-files/utils.bzl", "run_analysis")
 go_library(
     name = "lib",
     srcs = ["hello-world.go"],
-    importpath = "github.com/USB-05/go-test-module",
+    importpath = "github.com/USB-05/bazel-skeleton-project/go-test-module",
     visibility = ["//visibility:public"],
 )
 
