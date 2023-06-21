@@ -1,0 +1,59 @@
+load("@bazel_gazelle//:def.bzl", "gazelle")
+
+gazelle(name = "gazelle")
+
+#SonarQube Configurations
+filegroup(
+    name = "git",
+    srcs = glob(
+        [".git/**"],
+        exclude = [".git/**/*[*"],  # gitk creates temp files with []
+    ),
+    tags = ["manual"],
+)
+
+filegroup(
+    name = "coverage_report",
+    srcs = ["bazel-out/_coverage/_coverage_report.dat"],  # Created manually
+    tags = ["manual"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "test_reports",
+    srcs = glob(["bazel-testlogs/**/test.xml"]),  # Created manually
+    tags = ["manual"],
+    visibility = ["//visibility:public"],
+)
+
+load("//tools/bazel/sonarqube:defs.bzl", "sonarqube")
+
+sonarqube(
+    name = "sonarqube_go",
+    language = "go",
+    srcs = [],
+    coverage_report = ":coverage_report",
+    modules = {
+        "//go-test-module:sq_subproject": "go-test-module",
+    },
+    project_key = "go_poc",
+    project_name = "GO_POC",
+    scm_info = [":git"],
+    tags = ["manual"],
+    targets = [],
+)
+
+sonarqube(
+    name = "sonarqube_java",
+    language = "java",
+    srcs = [],
+    coverage_report = ":coverage_report",
+    modules = {
+        "//java-test-module:sq_subproject": "java-test-module",
+    },
+    project_key = "go_poc",
+    project_name = "GO_POC",
+    scm_info = [":git"],
+    tags = ["manual"],
+    targets = [],
+)

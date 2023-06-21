@@ -1,0 +1,44 @@
+load("//:tools/bzl-files/utils.bzl", "run_analysis", "run_tests")
+
+filegroup(
+    name = "java_srcs",
+    srcs = glob(["src/main/java/**/*.java"]),
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "java_test_srcs",
+    srcs = glob(["src/test/java/**/*.java"]),
+    visibility = ["//visibility:public"],
+)
+
+java_library(
+    name = "module",
+    srcs = [":java_srcs"],
+    visibility = ["//visibility:public"],
+)
+
+java_library(
+    name = "moduleTest",
+    srcs = [":java_test_srcs"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":module",
+        "@maven//:junit_junit"
+    ],
+)
+
+#java_test(
+#    name = "moduleTest",
+#    srcs = [":java_test_srcs"],
+#    test_class = "usb.example.DTest",
+#    visibility = ["//visibility:public"],
+#    deps = [
+#        ":module",
+#        "@maven//:junit_junit",
+#    ],
+#)
+
+run_tests(srcs = "src/test/java/**/*.java")
+
+run_analysis(language = "java")

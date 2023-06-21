@@ -1,0 +1,1 @@
+Sample Bazel Project with functionality to generate the coverage in SonarQube server.

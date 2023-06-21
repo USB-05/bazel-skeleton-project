@@ -1,0 +1,23 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
+load("//:tools/bzl-files/utils.bzl", "run_analysis")
+
+go_library(
+    name = "lib",
+    srcs = ["hello-world.go"],
+    importpath = "github.com/USB-05/go-test-module",
+    visibility = ["//visibility:public"],
+)
+
+go_binary(
+    name = "hello-world",
+    embed = [":lib"],
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "lib_test",
+    srcs = ["hello-world_test.go"],
+    embed = [":lib"],
+)
+
+run_analysis(language = "go")

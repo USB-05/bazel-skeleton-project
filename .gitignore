@@ -1,0 +1,6 @@
+.ijwb
+.idea
+bazel-bazel-skeleton-project
+bazel-bin
+bazel-out
+bazel-testlogs
