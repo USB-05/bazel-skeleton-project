@@ -41,4 +41,4 @@ java_library(
 
 run_tests(srcs = "src/test/java/**/*.java")
 
-run_analysis(language = "java")
+run_analysis()
