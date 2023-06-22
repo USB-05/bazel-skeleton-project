@@ -58,7 +58,11 @@ def sonar_prop(
        tags = tags,
        visibility = visibility)
 
-def run_analysis(language):
+def run_analysis(**kwargs):
+    if not 'language' in kwargs:
+        language = "java"
+    else:
+        language = kwargs.get("language")
     print ("Configuring Sonar Prop File for language..... " + language)
     sonar_prop(language)
 
