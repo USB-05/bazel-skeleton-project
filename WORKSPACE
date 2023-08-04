@@ -84,10 +84,10 @@ maven_install(
         "https://jcenter.bintray.com/",
         "https://repo1.maven.org/maven2",
     ],
-#    maven_install_json = "//tools/pinned-versions:maven_install.json",
-#    version_conflict_policy = "pinned",
+    maven_install_json = "//tools/pinned-versions:maven_install.json",
+    version_conflict_policy = "pinned",
 )
 
-#load("@maven//:defs.bzl", "pinned_maven_install")
-#
-#pinned_maven_install()
+load("@maven//:defs.bzl", "pinned_maven_install")
+
+pinned_maven_install()
