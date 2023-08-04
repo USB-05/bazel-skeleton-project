@@ -83,9 +83,9 @@ def _build_sonar_project_properties(ctx, sq_properties_file):
             is_executable = False,
         )
         return ctx.runfiles(
-                files = [sq_properties_file] + ctx.files.srcs + ctx.files.test_srcs + test_reports_runfiles + coverage_runfiles,
-                transitive_files = depset(transitive = [java_files["output_jars"], java_files["deps_jars"]]),
-            )
+            files = [sq_properties_file] + ctx.files.srcs + ctx.files.test_srcs + test_reports_runfiles + coverage_runfiles,
+            transitive_files = depset(transitive = [java_files["output_jars"], java_files["deps_jars"]]),
+        )
     else:
         ctx.actions.expand_template(
             template = ctx.file.sq_properties_template,
@@ -103,9 +103,9 @@ def _build_sonar_project_properties(ctx, sq_properties_file):
             is_executable = False,
         )
         return ctx.runfiles(
-                files = [sq_properties_file] + ctx.files.srcs + ctx.files.test_srcs + test_reports_runfiles + coverage_runfiles,
-#                transitive_files = depset(transitive = [java_files["output_jars"], java_files["deps_jars"]]),
-            )
+            files = [sq_properties_file] + ctx.files.srcs + ctx.files.test_srcs + test_reports_runfiles + coverage_runfiles,
+            #                transitive_files = depset(transitive = [java_files["output_jars"], java_files["deps_jars"]]),
+        )
 
 def _get_java_files(java_targets):
     return {
@@ -240,7 +240,7 @@ def sq_project(
         sq_properties_template = "//tools/bazel/sonarqube:sonar-project.properties.tpl",
         tags = [],
         visibility = []):
-    if language == 'go':
+    if language == "go":
         sq_properties_template = "//tools/bazel/sonarqube:sonar-project-go.properties.tpl"
     _sq_project(
         name = name,

@@ -1,0 +1,12 @@
+# Bazel SonarQube Integration
+coverage --collect_code_coverage
+coverage --combined_report=lcov
+coverage --coverage_report_generator=//tools/bazel/sonarqube:sonarqube_coverage_generator
+coverage --experimental_fetch_all_coverage_outputs
+coverage --experimental_strict_java_deps=off
+coverage --cache_test_results=yes
+coverage --test_output=summary
+coverage --build_runfile_links
+
+startup --output_base=/tmp/bazel_base
+build --sandbox_base=/tmp/bazel_sandbox

@@ -1,4 +1,4 @@
-load("//:tools/bzl-files/utils.bzl", "run_analysis", "run_tests")
+load("//:tools/bzl-files/utils.bzl", "genrule_func", "run_analysis", "run_tests")
 
 filegroup(
     name = "java_srcs",
@@ -14,17 +14,17 @@ filegroup(
 
 java_library(
     name = "module",
-    srcs = [":java_srcs"],
+    srcs = glob(["src/main/java/**/*.java"]),
     visibility = ["//visibility:public"],
 )
 
 java_library(
     name = "moduleTest",
-    srcs = [":java_test_srcs"],
+    srcs = glob(["src/test/java/**/*.java"]),
     visibility = ["//visibility:public"],
     deps = [
         ":module",
-        "@maven//:junit_junit"
+        "@maven//:junit_junit",
     ],
 )
 
@@ -42,3 +42,5 @@ java_library(
 run_tests(srcs = "src/test/java/**/*.java")
 
 run_analysis()
+
+genrule_func()

@@ -1,6 +1,9 @@
 load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
 
 gazelle(name = "gazelle")
+
+buildifier(name = "buildifier")
 
 #SonarQube Configurations
 filegroup(
@@ -30,9 +33,9 @@ load("//tools/bazel/sonarqube:defs.bzl", "sonarqube")
 
 sonarqube(
     name = "sonarqube_go",
-    language = "go",
     srcs = [],
     coverage_report = ":coverage_report",
+    language = "go",
     modules = {
         "//go-test-module:sq_subproject": "go-test-module",
     },
@@ -45,9 +48,9 @@ sonarqube(
 
 sonarqube(
     name = "sonarqube_java",
-    language = "java",
     srcs = [],
     coverage_report = ":coverage_report",
+    language = "java",
     modules = {
         "//java-test-module:sq_subproject": "java-test-module",
     },
