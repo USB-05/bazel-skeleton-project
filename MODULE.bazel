@@ -1,0 +1,20 @@
+module(
+    name = "go_bazel_workspace",
+    version = "1.0.0"
+)
+
+bazel_dep(name = "rules_go", repo_name = "io_bazel_rules_go", version = "0.39.1")
+
+go_register_toolchains = use_extension("@rules_go//go:deps.bzl", "register_toolchains")
+go_register_toolchains.download(version = "1.19.8")
+
+go_rules_dependencies = use_extension("@rules_go//go:deps.bzl", "go_rules_dependencies")
+
+go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
+go_sdk.download(version = "1.20.3")
+
+bazel_dep(name = "gazelle", repo_name = "bazel_gazelle", version = "0.30.0")
+gazelle_dependencies = use_extension("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
+
+bazel_dep(name = "bazel_skylib", repo_name = "bazel_skylib", version = "1.4.2")
+bzl_library = use_extension("@bazel_skylib//:bzl_library.bzl", "bzl_library")

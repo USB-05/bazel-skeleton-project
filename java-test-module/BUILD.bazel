@@ -1,4 +1,5 @@
 load("//:tools/bzl-files/utils.bzl", "genrule_func", "run_analysis", "run_tests")
+load("//:tools/bzl-files/custom-rules.bzl", "yamllint")
 
 filegroup(
     name = "java_srcs",
@@ -44,3 +45,9 @@ run_tests(srcs = "src/test/java/**/*.java")
 run_analysis()
 
 genrule_func()
+
+yamllint(
+    name = "linting",
+    srcs = "src/main/java/usb/example/test.yaml",
+    output = "yamllint.log",
+)
