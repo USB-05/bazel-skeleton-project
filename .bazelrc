@@ -1,4 +1,8 @@
 # Bazel SonarQube Integration
+
+build --enable_bzlmod
+build --sandbox_base=/tmp/bazel_sandbox
+
 coverage --collect_code_coverage
 coverage --combined_report=lcov
 coverage --coverage_report_generator=//tools/bazel/sonarqube:sonarqube_coverage_generator
@@ -9,4 +13,3 @@ coverage --test_output=summary
 coverage --build_runfile_links
 
 startup --output_base=/tmp/bazel_base
-build --sandbox_base=/tmp/bazel_sandbox

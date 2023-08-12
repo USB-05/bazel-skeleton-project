@@ -3,6 +3,20 @@ module(
     version = "1.0.0"
 )
 
+#-----------------------GLOBAL Configurations----------------------------
+
+bazel_dep(name = "buildtools", repo_name = "com_github_bazelbuild_buildtools", version = "4.0.1")
+archive_override(
+  module_name = "buildtools",
+  urls = [
+    "https://harness-artifactory.harness.io/artifactory/bazel-buildtools-github/archive/refs/tags/4.0.1.zip"
+  ],
+  strip_prefix = "buildtools-4.0.1",
+  integrity = "932160d5694e688cb7a05ac38efba4b9a90470c75f39716d85fb1d2f95eec96d",
+)
+
+#------------------------GO Configurations-------------------------------
+
 bazel_dep(name = "rules_go", repo_name = "io_bazel_rules_go", version = "0.39.1")
 
 go_register_toolchains = use_extension("@rules_go//go:deps.bzl", "register_toolchains")
@@ -18,3 +32,40 @@ gazelle_dependencies = use_extension("@bazel_gazelle//:deps.bzl", "gazelle_depen
 
 bazel_dep(name = "bazel_skylib", repo_name = "bazel_skylib", version = "1.4.2")
 bzl_library = use_extension("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+
+bazel_dep(name = "protobuf", repo_name = "com_google_protobuf", version = "21.7")
+protobuf_deps = use_extension("@protobuf//:protobuf_deps.bzl", "protobuf_deps")
+
+
+#------------------------SONAR Configurations-------------------------------
+
+bazel_dep(name = "stardoc", repo_name = "io_bazel_stardoc", version = "0.5.3")
+stardoc_repositories = use_extension("@io_bazel_stardoc//:setup.bzl", "stardoc_repositories")
+
+
+#------------------------JAVA Configurations-------------------------------
+
+default_java_toolchain = use_extension("@bazel_tools//tools/jdk:default_java_toolchain.bzl", "default_java_toolchain")
+BASE_JDK9_JVM_OPTS = use_extension("@bazel_tools//tools/jdk:default_java_toolchain.bzl", "BASE_JDK9_JVM_OPTS")
+DEFAULT_TOOLCHAIN_CONFIGURATION = use_extension("@bazel_tools//tools/jdk:default_java_toolchain.bzl", "DEFAULT_TOOLCHAIN_CONFIGURATION")
+
+use_repo(default_java_toolchain, "default_java_toolchain")
+
+bazel_dep(name = "rules_jvm_external", repo_name = "rules_jvm_external", version = "5.3")
+maven_install = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+
+maven_install.install(
+    artifacts = [
+        "junit:junit:4.12",
+    ],
+    repositories = [
+        "https://jcenter.bintray.com/",
+        "https://repo1.maven.org/maven2",
+    ],
+    lock_file = "//:tools/pinned-versions/maven_install.json",
+    version_conflict_policy = "pinned",
+    fetch_sources = True,
+
+)
+
+use_repo(maven_install, "maven", "unpinned_maven")
