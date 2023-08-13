@@ -1,4 +1,4 @@
-workspace(name = "go_bazel_workspace")
+# workspace(name = "go_bazel_workspace")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
@@ -60,12 +60,12 @@ bazel_sonarqube_repositories()
 #
 #RULES_JVM_EXTERNAL_SHA = "31701ad93dbfe544d597dbe62c9a1fdd76d81d8a9150c2bf1ecf928ecdf97169"
 #
-#http_archive(
-#    name = "com_github_bazelbuild_buildtools",
-#    sha256 = "932160d5694e688cb7a05ac38efba4b9a90470c75f39716d85fb1d2f95eec96d",
-#    strip_prefix = "buildtools-4.0.1",
-#    url = "https://harness-artifactory.harness.io/artifactory/bazel-buildtools-github/archive/refs/tags/4.0.1.zip",
-#)
+http_archive(
+   name = "com_github_bazelbuild_buildtools",
+   sha256 = "932160d5694e688cb7a05ac38efba4b9a90470c75f39716d85fb1d2f95eec96d",
+   strip_prefix = "buildtools-4.0.1",
+   url = "https://harness-artifactory.harness.io/artifactory/bazel-buildtools-github/archive/refs/tags/4.0.1.zip",
+)
 #
 #http_archive(
 #    name = "rules_cc",

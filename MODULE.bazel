@@ -5,19 +5,20 @@ module(
 
 #-----------------------GLOBAL Configurations----------------------------
 
-bazel_dep(name = "buildtools", repo_name = "com_github_bazelbuild_buildtools", version = "4.0.1")
-archive_override(
-  module_name = "buildtools",
-  urls = [
-    "https://harness-artifactory.harness.io/artifactory/bazel-buildtools-github/archive/refs/tags/4.0.1.zip"
-  ],
-  strip_prefix = "buildtools-4.0.1",
-  integrity = "932160d5694e688cb7a05ac38efba4b9a90470c75f39716d85fb1d2f95eec96d",
-)
+# bazel_dep(name = "buildtools", repo_name = "com_github_bazelbuild_buildtools", version = "4.0.1")
+# single_version_override(
+#   module_name = "buildtools",
+#   registry = "https://harness-artifactory.harness.io/artifactory/bazel-buildtools-github/archive/refs/tags/4.0.1.zip",
+#   strip_prefix = "buildtools-4.0.1",
+#   integrity = "sha256-kyFg1WlOaIy3oFrDjvukuakEcMdfOXFthfsdL5XuyW0=",
+# )
 
 #------------------------GO Configurations-------------------------------
 
 bazel_dep(name = "rules_go", repo_name = "io_bazel_rules_go", version = "0.39.1")
+bazel_dep(name = "gazelle", repo_name = "bazel_gazelle", version = "0.30.0")
+bazel_dep(name = "bazel_skylib", repo_name = "bazel_skylib", version = "1.4.2")
+bazel_dep(name = "protobuf", repo_name = "com_google_protobuf", version = "21.7")
 
 go_register_toolchains = use_extension("@rules_go//go:deps.bzl", "register_toolchains")
 go_register_toolchains.download(version = "1.19.8")
@@ -27,13 +28,10 @@ go_rules_dependencies = use_extension("@rules_go//go:deps.bzl", "go_rules_depend
 go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
 go_sdk.download(version = "1.20.3")
 
-bazel_dep(name = "gazelle", repo_name = "bazel_gazelle", version = "0.30.0")
 gazelle_dependencies = use_extension("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
 
-bazel_dep(name = "bazel_skylib", repo_name = "bazel_skylib", version = "1.4.2")
 bzl_library = use_extension("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 
-bazel_dep(name = "protobuf", repo_name = "com_google_protobuf", version = "21.7")
 protobuf_deps = use_extension("@protobuf//:protobuf_deps.bzl", "protobuf_deps")
 
 
@@ -44,12 +42,6 @@ stardoc_repositories = use_extension("@io_bazel_stardoc//:setup.bzl", "stardoc_r
 
 
 #------------------------JAVA Configurations-------------------------------
-
-default_java_toolchain = use_extension("@bazel_tools//tools/jdk:default_java_toolchain.bzl", "default_java_toolchain")
-BASE_JDK9_JVM_OPTS = use_extension("@bazel_tools//tools/jdk:default_java_toolchain.bzl", "BASE_JDK9_JVM_OPTS")
-DEFAULT_TOOLCHAIN_CONFIGURATION = use_extension("@bazel_tools//tools/jdk:default_java_toolchain.bzl", "DEFAULT_TOOLCHAIN_CONFIGURATION")
-
-use_repo(default_java_toolchain, "default_java_toolchain")
 
 bazel_dep(name = "rules_jvm_external", repo_name = "rules_jvm_external", version = "5.3")
 maven_install = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
@@ -69,3 +61,9 @@ maven_install.install(
 )
 
 use_repo(maven_install, "maven", "unpinned_maven")
+
+default_java_toolchain = use_extension("@bazel_tools//tools/jdk:default_java_toolchain.bzl", "default_java_toolchain")
+BASE_JDK9_JVM_OPTS = use_extension("@bazel_tools//tools/jdk:default_java_toolchain.bzl", "BASE_JDK9_JVM_OPTS")
+DEFAULT_TOOLCHAIN_CONFIGURATION = use_extension("@bazel_tools//tools/jdk:default_java_toolchain.bzl", "DEFAULT_TOOLCHAIN_CONFIGURATION")
+
+use_repo(default_java_toolchain, "default_java_toolchain")

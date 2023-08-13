@@ -1,5 +1,6 @@
 load("@bazel_gazelle//:def.bzl", "gazelle")
 load("@com_github_bazelbuild_buildtools//buildifier:def.bzl", "buildifier")
+load("//tools/bazel/sonarqube:defs.bzl", "sonarqube")
 
 gazelle(name = "gazelle")
 
@@ -28,8 +29,6 @@ filegroup(
     tags = ["manual"],
     visibility = ["//visibility:public"],
 )
-
-load("//tools/bazel/sonarqube:defs.bzl", "sonarqube")
 
 sonarqube(
     name = "sonarqube_go",
