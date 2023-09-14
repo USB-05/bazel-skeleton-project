@@ -11,9 +11,9 @@ spec:
   tls:
     - secretName: tls-certs
       hosts:
-        - harness-bazel-cache.qa.harness.io
+        - harness-bazel-cache
   rules:
-    - host: "harness-bazel-cache.qa.harness.io"
+    - host: "harness-bazel-cache"
       http:
         paths:
           - path: /
@@ -23,7 +23,7 @@ spec:
                 name: bazel-cache-svc
                 port:
                   number: 8080
-    - host: "harness-bazel-cache.qa.harness.io"
+    - host: "harness-bazel-cache"
       http:
         paths:
           - path: /cache2
