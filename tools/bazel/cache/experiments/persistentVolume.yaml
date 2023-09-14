@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bazel-cache-pvc
+  namespace: bazel-cache-harness
+  labels:
+    app: bazel-cache-app
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi
+  # storageClassName: csi-cinder-high-speed
+

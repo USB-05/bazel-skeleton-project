@@ -1,0 +1,25 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bazel-remote-cache
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: bazel-cache-app
+spec:
+  ingressClassName: nginx-130
+  # tls:
+  #   - secretName: bazel-cache-tls
+  #     hosts:
+  #       - harness-bazel-cache.qa.harness.io
+  rules:
+    # - host: "harness-bazel-cache.qa.harness.io"
+      - http:
+          paths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: bazel-cache-svc
+                  port:
+                    number: 8080

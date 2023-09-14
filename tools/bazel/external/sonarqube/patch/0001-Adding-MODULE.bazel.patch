@@ -1,0 +1,23 @@
+From 8ab8f880f0471ef6bc1094a93aadaa7c8a89773e Mon Sep 17 00:00:00 2001
+From: Udham Singh <udham.singh@harness.io>
+Date: Sun, 13 Aug 2023 18:09:44 +0530
+Subject: [PATCH] Adding MODULE.bazel
+
+---
+ MODULE.bazel | 4 ++++
+ 1 file changed, 4 insertions(+)
+ create mode 100644 MODULE.bazel
+
+diff --git a/MODULE.bazel b/MODULE.bazel
+new file mode 100644
+index 0000000..8bb9438
+--- /dev/null
++++ b/MODULE.bazel
+@@ -0,0 +1,4 @@
++module(
++    name = "org_sonarsource_scanner_cli_sonar_scanner_cli",
++    version = "3.3.0.1492",
++)
+-- 
+2.39.2 (Apple Git-143)
+

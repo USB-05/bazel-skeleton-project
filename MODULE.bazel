@@ -1,16 +1,18 @@
 module(
     name = "go_bazel_workspace",
-    version = "1.0.0"
+    version = "1.0.0",
 )
 
 #-----------------------GLOBAL Configurations----------------------------
 
-# bazel_dep(name = "buildtools", repo_name = "com_github_bazelbuild_buildtools", version = "4.0.1")
-# single_version_override(
-#   module_name = "buildtools",
-#   registry = "https://harness-artifactory.harness.io/artifactory/bazel-buildtools-github/archive/refs/tags/4.0.1.zip",
+# bazel_dep(name = "com_github_bazelbuild_buildtools", version = "4.0.1")
+# archive_override(
+#   module_name = "com_github_bazelbuild_buildtools",
+#   urls = "https://harness-artifactory.harness.io/artifactory/bazel-buildtools-github/archive/refs/tags/4.0.1.zip",
 #   strip_prefix = "buildtools-4.0.1",
+#   patches = ["//tools/bazel/external/buildtools/patch:0001-Adding-MODULE.bazel.patch"],
 #   integrity = "sha256-kyFg1WlOaIy3oFrDjvukuakEcMdfOXFthfsdL5XuyW0=",
+#   patch_strip = 1
 # )
 
 #------------------------GO Configurations-------------------------------
@@ -37,8 +39,33 @@ protobuf_deps = use_extension("@protobuf//:protobuf_deps.bzl", "protobuf_deps")
 
 #------------------------SONAR Configurations-------------------------------
 
+sonar_scanner_cli_version = "3.3.0.1492"
+
+bazel_dep(name = "org_sonarsource_scanner_cli_sonar_scanner_cli", repo_name = "org_sonarsource_scanner_cli_sonar_scanner_cli", version = "3.3.0.1492")
+archive_override(
+        module_name = "org_sonarsource_scanner_cli_sonar_scanner_cli",
+        urls = [
+            "https://repo1.maven.org/maven2/org/sonarsource/scanner/cli/sonar-scanner-cli/%s/sonar-scanner-cli-%s.zip" % (sonar_scanner_cli_version, sonar_scanner_cli_version),
+            "https://jcenter.bintray.com/org/sonarsource/scanner/cli/sonar-scanner-cli/%s/sonar-scanner-cli-%s.zip" % (sonar_scanner_cli_version, sonar_scanner_cli_version),
+        ],
+        strip_prefix = "sonar-scanner-" + sonar_scanner_cli_version,
+        integrity = "sha256-D6vT+i4Qu/xc32R2X/NeiOeTfkiq1R2EQBufNtveNng=",
+        patches = [
+            "//tools/bazel/external/sonarqube/patch:0001-temp-patch-file.patch",
+            "//tools/bazel/external/sonarqube/patch:0001-Adding-MODULE.bazel.patch",
+            ],
+        patch_strip = 1
+    )
+
 bazel_dep(name = "stardoc", repo_name = "io_bazel_stardoc", version = "0.5.3")
 stardoc_repositories = use_extension("@io_bazel_stardoc//:setup.bzl", "stardoc_repositories")
+
+
+# sonar_repository = use_extension("//tools/bazel/sonarqube:repositories.bzl", "ext_bazel_sonarqube_repositories")
+# use_repo(sonar_repository, "bazel_sonarqube_repositories")
+
+# test = use_extension("//:module_extensions_test.bzl", "ext_test")
+# use_repo(test, "test_repo_rule")
 
 
 #------------------------JAVA Configurations-------------------------------

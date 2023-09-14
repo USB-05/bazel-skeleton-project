@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bazel-cache-config
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: bazel-cache-app
+data:
+  config: |
+    [default]
+    region = <Region>
+    output = json
+  credentials: |
+    [default]
+    aws_access_key_id = <Access-Key>
+    aws_secret_access_key = <Secret-Key>

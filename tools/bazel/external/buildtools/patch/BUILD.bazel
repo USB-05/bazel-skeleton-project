@@ -1,0 +1,3 @@
+exports_files(
+    srcs = ["0001-Adding-MODULE.bazel.patch"], 
+    )

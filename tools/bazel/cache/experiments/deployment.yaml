@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bazel-cache-deployment
+  namespace: bazel-cache-harness
+  labels:
+    app: bazel-cache-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bazel-cache-app
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: bazel-cache-app
+    spec:
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+      - name: bazel-remote-cache
+        image: buchgr/bazel-remote-cache:v2.4.2
+        args:
+          - --s3.auth_method=aws_credentials_file
+          - --s3.aws_profile=default
+          - --s3.aws_shared_credentials_file=/aws-config/credentials
+          - --s3.bucket=remote-build-cache
+          - --s3.endpoint=s3.us-west-or.perf.cloud.ovh.us
+          # - --tls_cert_file=/certs/tls_cert.cert
+          # - --tls_key_file=/certs/tls_key.key
+          # - --tls_ca_file=/certs/tls_ca.cert
+          - --max_size=5
+        ports:
+          - containerPort: 9092
+            name: http
+            protocol: TCP
+          - containerPort: 8080
+            name: http-default
+            protocol: TCP
+        livenessProbe:
+            grpc:
+              service: /grpc.health.v1.Health/Check
+              port: 9092
+            failureThreshold: 3
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 60
+        readinessProbe:
+            grpc:
+              service: /grpc.health.v1.Health/Check
+              port: 9092
+            failureThreshold: 3
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 60
+        env:
+        - name: BAZEL_REMOTE_DIR
+          value: /data
+        - name: BAZEL_REMOTE_MAX_SIZE
+          value: "5"
+        volumeMounts:
+        - mountPath: /aws-config
+          name: bazel-cache-config
+        - mountPath: /certs
+          name: bazel-cache-certs
+        - mountPath: /data
+          name: cache-data
+        resources:
+          limits:
+            memory: 10Gi
+            cpu: 2500m
+          requests:
+            memory: 10Gi
+            cpu: 2500m
+      volumes:
+      - name: bazel-cache-config
+        configMap:
+          name: bazel-cache-config
+      - name: bazel-cache-certs
+        secret:
+          secretName: bazel-cache-certs
+      - name: cache-data
+        persistentVolumeClaim:
+          claimName: bazel-cache-pvc

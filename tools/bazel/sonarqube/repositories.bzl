@@ -4,8 +4,9 @@ def bazel_sonarqube_repositories(
         bazel_version_repository_name = "bazel_version",
         sonar_scanner_cli_version = "3.3.0.1492",
         sonar_scanner_cli_sha256 = "0fabd3fa2e10bbfc5cdf64765ff35e88e7937e48aad51d84401b9f36dbde3678",
-        bazel_skylib_version = "1.0.3",
-        bazel_skylib_sha256 = "1c531376ac7e5a180e0237938a2536de0c54d93f5c278634818e0efc952dd56c"):
+        # bazel_skylib_version = "1.0.3",
+        # bazel_skylib_sha256 = "1c531376ac7e5a180e0237938a2536de0c54d93f5c278634818e0efc952dd56c"
+        ):
     http_archive(
         name = "org_sonarsource_scanner_cli_sonar_scanner_cli",
         build_file = "//tools/bazel/sonarqube:BUILD.sonar_scanner",
@@ -17,17 +18,19 @@ def bazel_sonarqube_repositories(
         ],
     )
 
-    if not native.existing_rule("bazel_skylib"):
-        http_archive(
-            name = "bazel_skylib",
-            urls = [
-                "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/%s/bazel-skylib-%s.tar.gz" % (bazel_skylib_version, bazel_skylib_version),
-                "https://github.com/bazelbuild/bazel-skylib/releases/download/%s/bazel-skylib-%s.tar.gz" % (bazel_skylib_version, bazel_skylib_version),
-            ],
-            sha256 = bazel_skylib_sha256,
-        )
+    # if not native.existing_rule("bazel_skylib"):
+    #     http_archive(
+    #         name = "bazel_skylib",
+    #         urls = [
+    #             "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/%s/bazel-skylib-%s.tar.gz" % (bazel_skylib_version, bazel_skylib_version),
+    #             "https://github.com/bazelbuild/bazel-skylib/releases/download/%s/bazel-skylib-%s.tar.gz" % (bazel_skylib_version, bazel_skylib_version),
+    #         ],
+    #         sha256 = bazel_skylib_sha256,
+    #     )
 
-    bazel_version_repository(name = bazel_version_repository_name)
+    _bazel_version_repository(
+        name = bazel_version_repository_name
+    )
 
 # A hacky way to work around the fact that native.bazel_version is only
 # available from WORKSPACE macros, not BUILD.bazel macros or rules.
@@ -47,7 +50,20 @@ bzl_library(
 )
 """)
 
-bazel_version_repository = repository_rule(
+_bazel_version_repository = repository_rule(
     implementation = _bazel_version_repository_impl,
     local = True,
 )
+
+# _bazel_sonarqube_repositories = repository_rule(
+#     implementation = _bazel_sonarqube_repositories_impl,
+# )
+
+# def _ext_bazel_sonarqube_repositories_impl(_):
+#     _bazel_sonarqube_repositories(
+#         name = "bazel_sonarqube_repositories"
+#     )
+
+# ext_bazel_sonarqube_repositories = module_extension(
+#     implementation = _ext_bazel_sonarqube_repositories_impl
+# )

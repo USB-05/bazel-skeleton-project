@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: bazel-cache-sts
+  namespace: bazel-cache-harness
+  labels:
+    app: bazel-cache-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bazel-cache-app
+  template:
+    metadata:
+      labels:
+        app: bazel-cache-app
+    spec:
+      initContainers:
+        - name: volume-permissions
+          image: "busybox:1.36-glibc"
+          command: [ "/bin/sh" ]
+          args:
+            - "-c"
+            # language=bash
+            - >
+              ls -al /data &&
+              chmod -R 750 /data &&
+              chown -R 1000:1000 /data
+          volumeMounts:
+          - mountPath: /data
+            name: bazel-cache-data
+          securityContext:
+            runAsNonRoot: false
+            runAsUser: 0
+      containers:
+      - name: bazel-remote-cache
+        image: buchgr/bazel-remote-cache:v2.4.2
+        args:
+          - --s3.auth_method=aws_credentials_file
+          - --s3.aws_profile=default
+          - --s3.aws_shared_credentials_file=/aws-config/credentials
+          # - --tls_cert_file=/certs/tls_cert.cert
+          # - --tls_key_file=/certs/tls_key.key
+          # - --tls_ca_file=/certs/tls_ca.cert
+          - --max_size=5
+        ports:
+          - containerPort: 9092
+            name: http
+            protocol: TCP
+          - containerPort: 8080
+            name: http-default
+            protocol: TCP
+        livenessProbe:
+            grpc:
+              service: /grpc.health.v1.Health/Check
+              port: 9092
+            failureThreshold: 3
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 60
+        readinessProbe:
+            grpc:
+              service: /grpc.health.v1.Health/Check
+              port: 9092
+            failureThreshold: 3
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 60
+        env:
+        - name: BAZEL_REMOTE_DIR
+          value: /data
+        - name: BAZEL_REMOTE_MAX_SIZE
+          value: "50"
+        - name: BAZEL_REMOTE_S3_BUCKET
+          value: "remote-build-cache"
+        - name: BAZEL_REMOTE_S3_ENDPOINT
+          value: "s3.us-west-or.perf.cloud.ovh.us"
+        - name: BAZEL_REMOTE_S3_REGION
+          value: "us-west-or"
+        - name: BAZEL_REMOTE_UNAUTHENTICATED_READS
+          value: "true"
+        volumeMounts:
+        - mountPath: /aws-config
+          name: bazel-cache-config
+        - mountPath: /certs
+          name: bazel-cache-certs
+        - mountPath: /data
+          name: bazel-cache-data
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        resources:
+          limits:
+            memory: 10Gi
+            cpu: 2500m
+          requests:
+            memory: 10Gi
+            cpu: 2500m
+      volumes:
+      - name: bazel-cache-config
+        configMap:
+          name: bazel-cache-config
+      - name: bazel-cache-certs
+        secret:
+          secretName: bazel-cache-certs
+  volumeClaimTemplates:
+  - metadata:
+      name: bazel-cache-data
+    spec:
+      accessModes: 
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100G

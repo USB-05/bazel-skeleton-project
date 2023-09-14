@@ -1,0 +1,46 @@
+# extension.bzl
+def _repo_impl(ctx):
+    ctx.file("WORKSPACE")
+    if ctx.attr.index == 0:
+        ctx.file("BUILD", """
+filegroup(
+    name = "foo",
+    srcs = [
+        "foo.txt",
+    ],
+    visibility = ["//visibility:public"],
+)
+""")
+        ctx.file("foo.txt", "Hello, Bazel!")
+    else:
+        ctx.file("BUILD", """
+filegroup(
+    name = "foo",
+    srcs = [
+        "@dep{}//:foo",
+    ],
+    visibility = ["//visibility:public"],
+)
+""".format(ctx.attr.index - 1))
+
+_repo = repository_rule(
+    implementation = _repo_impl,
+    attrs = {
+        "index": attr.int(),
+    }
+)
+
+def _ext_impl(_):
+    for i in range(10000):
+        _repo(
+            name = "dep{}".format(i),
+            index = i,
+        )
+
+ext = module_extension(
+    implementation = _ext_impl,
+)
+
+# MODULE.bazel
+ext = use_extension("//:extension.bzl", "ext")
+use_repo(ext, dep = "dep9999")

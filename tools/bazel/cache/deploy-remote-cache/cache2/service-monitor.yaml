@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: bazel-cache2-service-monitor
+  namespace: bazel-cache-harness
+  labels:
+    prometheus: main
+spec:
+  namespaceSelector:
+    matchNames:
+      - bazel-cache-harness
+  selector:
+    matchLabels:
+      app: bazel-cache2-app
+  endpoints:
+    - port: http-default
+      path: /metrics

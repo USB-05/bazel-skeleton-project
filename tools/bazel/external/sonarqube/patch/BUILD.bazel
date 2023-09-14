@@ -1,0 +1,6 @@
+exports_files(
+    srcs = [
+        "0001-temp-patch-file.patch",
+        "0001-Adding-MODULE.bazel.patch",
+        ], 
+    )

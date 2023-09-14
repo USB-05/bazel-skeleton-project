@@ -1,0 +1,57 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: check-mounts
+#   namespace: bazel-cache-harness
+#   labels:
+#     app: check-mounts
+---
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: check-mounts
+#   template:
+#     metadata:
+#       labels:
+#         app: check-mounts
+#     spec:
+#       containers:
+#       - name: check-mounts
+#         image: busybox:1.28
+#         command: ['sh', '-c', 'cat /certs/server_key /aws-config/credentials']
+#         env:
+#         - name: BAZEL_REMOTE_DIR
+#           value: /data
+#         - name: BAZEL_REMOTE_MAX_SIZE
+#           value: "1000"
+#         volumeMounts:
+#         - mountPath: /aws-config
+#           name: bazel-cache-config
+#         - mountPath: /certs
+#           name: bazel-cache-certs
+#         - mountPath: /data
+#           name: cache-data
+#       volumes:
+#       - name: bazel-cache-config
+#         configMap:
+#           name: bazel-cache-config
+#       - name: bazel-cache-certs
+#         secret:
+#           secretName: bazel-cache-certs
+#       - name: cache-data
+#         persistentVolumeClaim:
+#           claimName: bazel-cache-pvc
+
+
+      # - name: check-mounts
+      #   image: yauritux/busybox-curl:latest
+      #   command: ['sh', '-c']
+      #   args: ['curl http://bazel-cache-svc:8080/status; ls -lrta /data/cas.v2']
+      #   volumeMounts:
+      #     - mountPath: /aws-config
+      #       name: bazel-cache-config
+      #     - mountPath: /certs
+      #       name: bazel-cache-certs
+      #     - mountPath: /data
+      #       name: cache-data

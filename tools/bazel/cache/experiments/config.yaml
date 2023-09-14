@@ -1,0 +1,29 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bazel-cache-config
+  namespace: bazel-cache-harness
+  labels:
+    app: bazel-cache-app
+data:
+  config: |
+    [default]
+    region = us-west-or
+    output = json
+  credentials: |
+    [default]
+    aws_access_key_id = XXXX
+    aws_secret_access_key = XXXXX
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: bazel-cache-certs
+  namespace: bazel-cache-harness
+  labels:
+    app: bazel-cache-app
+type: Opaque
+data:
+  server_cert.crt: XXXXXX
+  server_key.key: XXXXXXX
