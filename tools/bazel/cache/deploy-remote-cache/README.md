@@ -52,3 +52,6 @@ kubectl create secret generic bazel-tls-configs -n bazel-cache-harness --from-fi
 kubectl label nodepool bazel-cache purpose=bazel-cache
 kubectl taint nodepool bazel-cache purpose=bazel-cache:PreferNoSchedule
 kubectl taint nodepool bazel-cache purpose=bazel-cache:PreferNoSchedule
+
+kubectl label nodepool bazel-cache-memory purpose=bazel-cache-memory
+kubectl taint nodepool bazel-cache-memory purpose=bazel-cache-memory:PreferNoSchedule

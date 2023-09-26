@@ -1,0 +1,24 @@
+        - name: CA_CERT
+          valueFrom:
+            secretKeyRef:
+              name: bazel-cache-certs
+              key: ca_cert
+        - name: SERVER_CERT
+          valueFrom:
+            secretKeyRef:
+              name: bazel-cache-certs
+              key: server_cert
+        - name: SERVER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: bazel-cache-certs
+              key: server_key
+
+
+
+kubectl create secret tls bazel-cache-certs -n bazel-cache-harness --from-file=./tls_ca_cert --from-file=./tls_cert.cert --from-file=./tls_key.key
+
+
+kubectl create secret tls bazel-cache-certs -n bazel-cache-harness \
+--key ./tls_cert.cert \
+--cert ./tls_key.key

@@ -1,0 +1,9 @@
+[default]
+region = us-west-1
+output = json
+[ovh]
+region = us-west-or
+output = json
+[profile bazel-cache]
+region = us-west-or
+output = JSON
